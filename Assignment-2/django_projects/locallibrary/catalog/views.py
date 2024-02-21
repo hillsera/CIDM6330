@@ -16,6 +16,10 @@ def index(request):
     # the all() is implied by default
     num_authors = Author.objects.count()
 
+    # Number of visits to this view, as counted in the session variable.
+    num_visits = request.session.get('num_visits', 0)
+    request.session['num_visits'] = num_visits + 1
+
     # Part 5 Challenge yourself prompt - add counts of genres and books with certain word
     num_genres = Genre.objects.filter(name__iexact='true crime').count()
     num_books_the = Book.objects.filter(title__istartswith='The ').count()
@@ -28,6 +32,7 @@ def index(request):
         'num_authors': num_authors,
         'num_genres': num_genres,
         'num_books_the': num_books_the,
+        'num_visits': num_visits,
     }
 
     # render html template index.html with data in context var
@@ -41,3 +46,10 @@ class BookListView(generic.ListView):
     
 class BookDetailView(generic.DetailView):
     model = Book
+
+class AuthorListView(generic.ListView):
+    model = Author
+    paginate_by = 10
+    
+class AuthorDetailView(generic.DetailView):
+    model = Author
