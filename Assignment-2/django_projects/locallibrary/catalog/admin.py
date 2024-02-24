@@ -47,4 +47,4 @@ class BookInstanceAdmin(admin.ModelAdmin):
         }),
     )
 
-    list_display = ('book', 'status', 'due_back', 'id')
+   

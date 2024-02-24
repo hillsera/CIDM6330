@@ -37,6 +37,8 @@ class Book(models.Model):
     # Genre class has already been defined so we can specify the object above.
     genre = models.ManyToManyField(
         Genre, help_text="Select a genre for this book")
+    language = models.ForeignKey(
+        'Language', on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         """String for representing the Model object."""
@@ -53,6 +55,7 @@ class Book(models.Model):
     display_genre.short_description = 'Genre'
 
 import uuid # Required for unique book instances
+
 
 class BookInstance(models.Model):
 
@@ -119,9 +122,9 @@ class Language(models.Model):
         unique=True,
         help_text="Enter the language the book is written in, English, Spanish, etc.)"
     )
-
-    def __str__(self):
-        return self.name
     
     def get_absolute_url(self):
         return reverse('language-detail', args=[str(self.id)])
+    
+    def __str__(self):
+        return self.name
