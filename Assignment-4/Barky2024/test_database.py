@@ -128,3 +128,32 @@ def test_database_manager_delete_bookmark(database_manager):
     cursor.execute(''' SELECT * FROM bookmarks WHERE title='Test Title' ''')
 
     assert cursor.fetchone() is None
+
+def test_database_manager_select_bookmark(database_manager):
+    database_manager.create_table(
+        "bookmarks",
+        {
+            "id": "integer primary key autoincrement",
+            "title": "text not null",
+            "url": "text not null",
+            "notes": "text",
+            "date_added": "text not null",
+        }
+    )
+
+    data = {
+        "title": "Test Title",
+        "url": "http://example.com",
+        "notes": "test notes",
+        "date_added": datetime.utcnow().isoformat()
+    }
+    database_manager.add("bookmarks", data)
+    
+    criteria = {"title": "Test Title"}
+    database_manager.select("bookmarks", criteria)
+
+    conn = database_manager.connection
+    cursor = conn.cursor()
+    cursor.execute(''' SELECT * FROM bookmarks WHERE title='Test Title' ''')
+
+    assert cursor.fetchone()[0] == 1 
