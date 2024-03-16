@@ -49,26 +49,7 @@ def test_database_manager_create_table(database_manager):
     # this is probably not really needed
     database_manager.drop_table("bookmarks")
 
-def test_database_manager_drop_table(database_manager):
-    database_manager.create_table(
-        "bookmarks",
-        {
-            "id": "integer primary key autoincrement",
-            "title": "text not null",
-            "url": "text not null",
-            "notes": "text",
-            "date_added": "text not null",
-        },
-    )
 
-    database_manager.drop_table("bookmarks")
-
-    conn = database_manager.connection
-    cursor = conn.cursor()
-
-    cursor.execute(''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='bookmarks' ''')
-
-    assert cursor.fetchone()[0] == 0
 
 def test_database_manager_add_bookmark(database_manager):
 
@@ -99,6 +80,29 @@ def test_database_manager_add_bookmark(database_manager):
     cursor = conn.cursor()
     cursor.execute(''' SELECT * FROM bookmarks WHERE title='test_title' ''')    
     assert cursor.fetchone()[0] == 1    
+
+
+# Tests I've added
+def test_database_manager_drop_table(database_manager):
+    database_manager.create_table(
+        "bookmarks",
+        {
+            "id": "integer primary key autoincrement",
+            "title": "text not null",
+            "url": "text not null",
+            "notes": "text",
+            "date_added": "text not null",
+        },
+    )
+
+    database_manager.drop_table("bookmarks")
+
+    conn = database_manager.connection
+    cursor = conn.cursor()
+
+    cursor.execute(''' SELECT count(name) FROM sqlite_master WHERE type='table' AND name='bookmarks' ''')
+
+    assert cursor.fetchone()[0] == 0
 
 def test_database_manager_delete_bookmark(database_manager):
     database_manager.create_table(
